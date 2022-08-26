@@ -1,8 +1,21 @@
-near-blank-project
-==================
+fungible_token
+==============
 
 This app was initialized with [create-near-app]
 
+NOTES
+=====
+
+This is fungible token implementation with JSON serialization
+
+- The maximum balance value is limited by U128 (2**128-1)
+- JSON calls should pass U128 as a base-10 string. E.g "100".
+- The contract optimizes the inner trie structure by hashing accound IDs. It will prevent some abuse of deep tries.
+- The contract tracks the change in storage before and after the call. If the storage increases, the contract requires the caller to attach enough deposit to the function call to cover the storage cost. 
+This is done to prvent a DOS attack on the contract by taking all available storage.
+If the storage decreases, the contract will issue a refund for the cost of the released storage.
+The unused tokens from the attached deposit are also refunded, so it's safe to attach more deposit than required.
+- To prevent the deployed contract from being modified or deleted, it should not have any access keys on its account. 
 
 Quick Start
 ===========
@@ -10,7 +23,6 @@ Quick Start
 If you haven't installed dependencies during setup:
 
     npm run deps-install
-
 
 Build and deploy your contract to TestNet with a temporary dev account:
 
@@ -22,7 +34,6 @@ Test your contract:
 
 If you have a frontend, run `npm start`. This will run a dev server.
 
-
 Exploring The Code
 ==================
 
@@ -33,14 +44,12 @@ Exploring The Code
    this is your entrypoint to learn how the frontend connects to the NEAR blockchain.
 3. Test your contract: `npm test`, this will run the tests in `integration-tests` directory.
 
-
 Deploy
 ======
 
-Every smart contract in NEAR has its [own associated account][NEAR accounts]. 
+Every smart contract in NEAR has its [own associated account][NEAR accounts].
 When you run `npm run deploy`, your smart contract gets deployed to the live NEAR TestNet with a temporary dev account.
 When you're ready to make it permanent, here's how:
-
 
 Step 0: Install near-cli (optional)
 -------------------------------------
@@ -52,7 +61,6 @@ Step 0: Install near-cli (optional)
 Or, if you'd rather use the locally-installed version, you can prefix all `near` commands with `npx`
 
 Ensure that it's installed with `near --version` (or `npx near --version`)
-
 
 Step 1: Create an account for the contract
 ------------------------------------------
@@ -75,7 +83,6 @@ Replace `PATH_TO_WASM_FILE` with the `wasm` that was generated in `contract` bui
 
     near deploy --accountId near-blank-project.YOUR-NAME.testnet --wasmFile PATH_TO_WASM_FILE
 
-
 Step 3: set contract name in your frontend code
 -----------------------------------------------
 
@@ -83,13 +90,10 @@ Modify the line in `src/config.js` that sets the account name of the contract. S
 
     const CONTRACT_NAME = process.env.CONTRACT_NAME || 'near-blank-project.YOUR-NAME.testnet'
 
-
-
 Troubleshooting
 ===============
 
 On Windows, if you're seeing an error containing `EPERM` it may be related to spaces in your path. Please see [this issue](https://github.com/zkat/npx/issues/209) for more details.
-
 
   [create-near-app]: https://github.com/near/create-near-app
   [Node.js]: https://nodejs.org/en/download/package-manager/

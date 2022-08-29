@@ -5,10 +5,7 @@ use near_contract_standards::fungible_token::FungibleToken;
 use near_sdk::borsh::{self, BorshDeserialize, BorshSerialize};
 use near_sdk::collections::LazyOption;
 use near_sdk::json_types::U128;
-use near_sdk::serde::__private::de::ContentRefDeserializer;
-use near_sdk::{
-    env, log, metadata, near_bindgen, AccountId, Balance, PanicOnDefault, PromiseOrValue,
-};
+use near_sdk::{env, log, near_bindgen, AccountId, Balance, PanicOnDefault, PromiseOrValue};
 
 #[near_bindgen]
 #[derive(BorshDeserialize, BorshSerialize, PanicOnDefault)]
@@ -44,6 +41,7 @@ impl Contract {
     }
 
     ///
+    ///                 ***NEAR TOKEN METADATA***
     /// initialize the contract with the given total supply owned by the given `owner_id' wihth the given ft metadata
     ///
     #[init]
@@ -85,5 +83,40 @@ near_contract_standards::impl_fungible_token_storage!(Contract, token, on_accoun
 impl FungibleTokenMetadataProvider for Contract {
     fn ft_metadata(&self) -> FungibleTokenMetadata {
         self.metadata.get().unwrap()
+    }
+}
+
+//// *** TESTS***
+#[cfg(all(test, not(target_arch = "wasm32")))]
+mod tests {
+    use near_sdk::test_utils::{accounts, VMContextBuilder};
+    use near_sdk::{testing_env, Balance};
+
+    use super::*;
+
+    const TOTAL_SUPPLY: Balance = 1_000_000_000_000_000;
+
+    fn get_context(predecessor_account_id: AccountId) -> VMContextBuilder {
+        let mut builder = VMContextBuilder::new();
+
+        builder
+            .current_account_id(accounts(0))
+            .signer_account_id(predecessor_account_id.clone())
+            .predecessor_account_id(predecessor_account_id);
+
+        builder
+    }
+
+    #[test]
+    fn test_new() {
+        let mut context = get_context(accounts(1));
+        testing_env!(context.build());
+
+        let contract = Contract::new_default_meta(accounts(1).into(), TOTAL_SUPPLY.into());
+
+        testing_env!(context.is_view(true).build());
+
+        assert_eq!(contract.ft_total_supply().0, TOTAL_SUPPLY);
+        assert_eq!(contract.ft_balance_of(accounts(1)).0, TOTAL_SUPPLY);
     }
 }

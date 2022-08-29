@@ -5,6 +5,7 @@ publish = false
 edition = "2018"
 
 [dev-dependencies]
+near-sdk = "4.0.0"
 anyhow = "1.0"
 borsh = "0.9"
 maplit = "1.0"
@@ -20,3 +21,4 @@ pkg-config = "0.3.1"
 [[example]]
 name = "integration-tests"
 path = "src/tests.rs"
+

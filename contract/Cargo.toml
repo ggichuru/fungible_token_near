@@ -1,5 +1,5 @@
 [package]
-name = "hello_near"
+name = "fungible-token"
 version = "1.0.0"
 authors = ["Near Inc <hello@near.org>"]
 edition = "2021"
@@ -9,6 +9,7 @@ crate-type = ["cdylib", "rlib"]
 
 [dependencies]
 near-sdk = "4.0.0"
+near-contract-standards = "4.0.0"
 uint = { version = "0.9.3", default-features = false }
 
 [profile.release]

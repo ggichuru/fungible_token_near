@@ -19,7 +19,6 @@ const DATA_IMAGE_SVG_NEAR_ICON: &str = "data:image/svg+xml,%3Csvg xmlns='http://
 #[near_bindgen]
 impl Contract {
     ///
-    ///                     ***CUSTOM METADATA***
     /// Initializes the contract with the given total supply owned by the given `owner_id` with default metadata
     ///
     /// <this is for example purposes only>
@@ -41,7 +40,6 @@ impl Contract {
     }
 
     ///
-    ///                 ***NEAR TOKEN METADATA***
     /// initialize the contract with the given total supply owned by the given `owner_id' wihth the given ft metadata
     ///
     #[init]
@@ -86,7 +84,6 @@ impl FungibleTokenMetadataProvider for Contract {
     }
 }
 
-//// *** TESTS***
 #[cfg(all(test, not(target_arch = "wasm32")))]
 mod tests {
     use near_sdk::test_utils::{accounts, VMContextBuilder};
